@@ -1,21 +1,21 @@
 [
   {
     "Client": "Univision News",
-    "Outlet": "The New York Times ",
+    "Outlet": "The New York Times",
     "Article": "https://www.nytimes.com/2017/06/18/business/media/a-newsroom-and-a-lifeline-univisions-urgent-sense-of-purpose.html",
     "og_image": "",
     "og_title": ""
   },
   {
     "Client": "Univision News",
-    "Outlet": "The Financial Times ",
+    "Outlet": "The Financial Times",
     "Article": "https://www.ft.com/content/d803c9e6-a2bf-11e2-bd45-00144feabdc0",
     "og_image": "",
     "og_title": ""
   },
   {
     "Client": "Univision News",
-    "Outlet": "Marketplace / American Public Media/NPR ",
+    "Outlet": "Marketplace / American Public Media/NPR",
     "Article": "https://www.marketplace.org/story/2013/01/24/univision-grows-along-hispanics",
     "og_image": "",
     "og_title": ""
@@ -57,21 +57,21 @@
   },
   {
     "Client": "Univision News",
-    "Outlet": "Poynter Institute ",
+    "Outlet": "Poynter Institute",
     "Article": "https://www.poynter.org/fact-checking/2016/univision-launches-first-u-s-fact-checking-project-en-espanol/",
     "og_image": "https://www.poynter.org/wp-content/uploads/2016/03/Screen-Shot-2016-03-09-at-2.02.32-PM.png",
     "og_title": "Univision launches first U.S. fact-checking project en Español - Poynter"
   },
   {
     "Client": "Univision News",
-    "Outlet": "Poynter Institute ",
+    "Outlet": "Poynter Institute",
     "Article": "https://www.poynter.org/ifcn/2020/poynters-international-fact-checking-network-launches-the-first-ever-coalition-of-major-u-s-fact-checkers-to-debunk-misinformation-in-english-and-spanish/",
     "og_image": "https://www.poynter.org/wp-content/uploads/2020/09/Captura-de-Tela-2020-09-18-às-07.25.23.png",
     "og_title": "Poynter’s International Fact-Checking Network launches the first-ever coalition of major U.S. fact-checkers to debunk misinformation in English and Spanish - Poynter"
   },
   {
     "Client": "Univision News",
-    "Outlet": "Poynter Institute ",
+    "Outlet": "Poynter Institute",
     "Article": "https://www.poynter.org/news-release/2019/univision-and-poynters-international-fact-checking-network-join-forces-to-fight-misinformation-in-the-u-s/",
     "og_image": "https://www.poynter.org/wp-content/uploads/2019/11/Copy-of-Poynter-IFCN-post_twitter-05-6.png",
     "og_title": "Univision and Poynter’s International Fact-Checking Network join forces to fight misinformation in the U.S. - Poynter"
@@ -127,7 +127,7 @@
   },
   {
     "Client": "Exile Content Studio",
-    "Outlet": "The Hollywood Reporter ",
+    "Outlet": "The Hollywood Reporter",
     "Article": "https://www.hollywoodreporter.com/business/business-news/candle-media-acquires-spanish-language-studio-exile-content-1235152960/",
     "og_image": "",
     "og_title": "Candle Media Acquires Spanish-Language Studio Exile Content"
@@ -148,7 +148,7 @@
   },
   {
     "Client": "Exile Content Studio",
-    "Outlet": "The New York Times ",
+    "Outlet": "The New York Times",
     "Article": "https://www.nytimes.com/2021/04/06/arts/television/mundo-kids-hispanic-tv.html",
     "og_image": "",
     "og_title": ""
@@ -190,14 +190,14 @@
   },
   {
     "Client": "#ZamoraLibre Campaign",
-    "Outlet": "Deutsche Welle ",
+    "Outlet": "Deutsche Welle",
     "Article": "https://www.dw.com/es/espa%C3%B1a-reino-unido-y-suecia-lamentan-cierre-de-elperi%C3%B3dico/a-65632652",
     "og_image": "",
     "og_title": "España, Reino Unido y Suecia lamentan cierre de elPeriódico"
   },
   {
     "Client": "#ZamoraLibre Campaign",
-    "Outlet": "Reuters Institute ",
+    "Outlet": "Reuters Institute",
     "Article": "https://reutersinstitute.politics.ox.ac.uk/news/entre-rejas-acosados-o-en-el-exilio-los-periodistas-de-centroamerica-desafian-la-presion",
     "og_image": "",
     "og_title": "Entre rejas, acosados o en el exilio, los periodistas de Centroamérica desafían la presión creciente de líderes autoritarios"
@@ -337,42 +337,42 @@
   },
   {
     "Client": "El Archivo",
-    "Outlet": "El País ",
+    "Outlet": "El País",
     "Article": "https://elpais.com/america/2024-12-06/un-archivo-independiente-para-proteger-de-autoritarismos-la-memoria-de-centroamerica.html",
     "og_image": "https://imagenes.elpais.com/resizer/v2/IFNYHB2IHVFL3F7V6YUUEJIW6Q.JPG?auth=d4fc096d49f4b1634d8738da74788778057bace3c0c88602ed6fc4f5b17bdde7&width=1200",
     "og_title": "Un archivo independiente para proteger de autoritarismos la memoria de Centroamérica"
   },
   {
     "Client": "El Archivo",
-    "Outlet": "The Los Angeles Times ",
+    "Outlet": "The Los Angeles Times",
     "Article": "https://www.latimes.com/espanol/california/articulo/2025-02-11/crean-archivo-independiente-de-medios-que-documenta-a-actores-corruptos-y-autoritarios-centroamericanos",
     "og_image": "https://ca-times.brightspotcdn.com/dims4/default/801e172/2147483647/strip/true/crop/5759x3023+1+0/resize/1200x630!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F86%2F2a%2Fa73fc93645a397e5cd1f3247c350%2F1191563-la-fg-guatemala-journalism-restrictions-kdb-016.jpg",
     "og_title": "Crean archivo independiente de medios que documenta a actores corruptos y autoritarios centroamericanos"
   },
   {
     "Client": "El Archivo",
-    "Outlet": "Latam Journalism Review ",
+    "Outlet": "Latam Journalism Review",
     "Article": "https://latamjournalismreview.org/es/articles/archivo-digital-conserva-el-legado-de-investigacion-de-elperiodico-y-otros-periodicos-centroamericanos/",
     "og_image": "https://latamjournalismreview.org/wp-content/uploads/2025/02/caima-featured.png",
     "og_title": "Archivo digital conserva el legado de investigación de elPeriódico y otros medios centroamericanos"
   },
   {
     "Client": "El Archivo",
-    "Outlet": "Prensa Libre ",
+    "Outlet": "Prensa Libre",
     "Article": "https://www.prensalibre.com/guatemala/comunitario/crean-el-archivo-de-medios-independientes-centroamericanos/",
     "og_image": "",
     "og_title": ""
   },
   {
     "Client": "El Archivo",
-    "Outlet": "Prensa Comunitaria ",
+    "Outlet": "Prensa Comunitaria",
     "Article": "https://prensacomunitaria.org/2024/12/crean-archivo-para-resguardar-el-trabajo-de-periodistas-y-medios-independientes-en-centroamerica/",
     "og_image": "https://prensacomunitaria.org/wp-content/uploads/2024/12/1024-768.jpg",
     "og_title": "Crean archivo para resguardar el trabajo de periodistas y medios independientes en Centroamérica - Prensa Comunitaria"
   },
   {
     "Client": "El Archivo",
-    "Outlet": "Global Investigative Journalism Network ",
+    "Outlet": "Global Investigative Journalism Network",
     "Article": "https://gijn.org/stories/digital-archive-legacy-central-america/",
     "og_image": "",
     "og_title": ""
