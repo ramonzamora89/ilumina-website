@@ -104,9 +104,17 @@ Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their
 - Built 3-page site from scratch using content from `Home.docx`, `short_bios.xlsx`, `Press.xlsx`
 - Implemented bilingual EN/ES toggle with full translations
 - Set up GitHub Pages hosting at ramonzamora89.github.io/ilumina-website
-- Set up Google Sheets → GitHub Actions → press.json pipeline
+- Set up Google Sheets → GitHub Actions → press.json pipeline (daily cron at 8am EST)
 - Scraped OG image + title for 21/54 press entries (rest are paywalled)
-- Hero: 2-column layout with animated rotating sun SVG + CTA button
-- Team page: vertical list layout with round profile photos and full bios with Excel links
+- Hero: 2-column layout with animated rotating sun SVG + CTA button (mailto:iluminacommunications@gmail.com)
+- Team page: vertical list layout with round profile photos and full bios with links from Excel
 - Press page: visual card grid (image, title, outlet) grouped by client
-- Nav background set to `#f4f6f7` to match logo background seamlessly
+- Nav background set to `#f4f6f7` to match logo background exactly (sampled from PNG pixel)
+- PROJECT.md created and committed to repo
+
+### 2026-06-26 — Pipeline fix
+- **Issue:** Google Sheet secret `PRESS_SHEET_URL` was set to the sharing URL (`/edit?usp=sharing`). The script parsed the redirect/HTML response and coincidentally wrote only 11 entries (the first Univision News block) instead of 54.
+- **Fix:** URL updated to `/export?format=csv` format. Workflow re-triggered manually and confirmed `Wrote 54 entries` with no unwanted commit (data was already in sync).
+- **Note for future:** The correct URL format for `PRESS_SHEET_URL` is:
+  `https://docs.google.com/spreadsheets/d/SHEET_ID/export?format=csv`
+  The sheet must be set to "Anyone with the link can view" for the export to work without authentication.
