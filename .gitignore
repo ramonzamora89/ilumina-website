@@ -1,0 +1,9 @@
+# System
+.DS_Store
+*.DS_Store
+Thumbs.db
+
+# Source / working files (not part of the deployed site)
+Home/
+equipo/
+press/
