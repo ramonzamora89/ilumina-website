@@ -100,6 +100,14 @@ Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their
 
 ## Changelog
 
+### 2026-08-15 — Client rename: Carroll Street Capital → Carabela
+- Client renamed to `Carabela / Bresh` in the Google Sheet.
+- **Gotcha found:** the client name is ALSO hardcoded in the `clientOrder` array in `js/main.js` (`renderPress()`), which controls the display order of client groups on the press page. The Sheet does not update this. A renamed client that isn't in `clientOrder` still renders, but falls to the bottom of the page. Updated to `'Carabela / Bresh'`.
+- **Second gotcha:** one Sheet row had `Carabela/ Bresh` (missing space), which split the client into two separate groups on the page, since grouping matches on the exact string. Fixed in the Sheet; workflow re-triggered manually to regenerate `press.json`.
+- Note: the Billboard entry's `og_title` still reads "Bresh Partners With Carroll Street Capital…" — that is the outlet's actual headline, scraped from the article. Left as is.
+
+**Rule of thumb for future client renames:** update the Google Sheet *and* `clientOrder` in `js/main.js`, then re-run the workflow manually instead of waiting for the 8am cron.
+
 ### 2026-06-26 — Initial launch
 - Built 3-page site from scratch using content from `Home.docx`, `short_bios.xlsx`, `Press.xlsx`
 - Implemented bilingual EN/ES toggle with full translations
