@@ -319,7 +319,7 @@ async function renderPress() {
       'Exile Content Studio',
       '#ZamoraLibre Campaign',
       'HYBE Latin America',
-      'Carroll Street Capital / Bresh',
+      'Carabela / Bresh',
       'El Archivo'
     ];
 
