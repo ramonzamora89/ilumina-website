@@ -3,8 +3,10 @@
 ## Overview
 3-page bilingual (EN/ES) static website for Ilumina Communications, a strategic communications consultancy. Hosted on GitHub Pages. No build step — pure HTML, CSS, and JavaScript.
 
-**Live URL:** https://ramonzamora89.github.io/ilumina-website/  
+**Live URL:** https://iluminacomms.com  
 **GitHub repo:** https://github.com/ramonzamora89/ilumina-website  
+
+The old Pages URL (`ramonzamora89.github.io/ilumina-website`) 301-redirects to the custom domain, so there is only one live deployment.
 
 ---
 
@@ -13,14 +15,14 @@
 |---|---|---|
 | Home | `index.html` | Hero, Who We Are, Services |
 | Team | `team.html` | 5 team member profiles |
-| Press | `press.html` | 54+ press entries, grouped by client |
+| Press | `press.html` | 67 press entries, grouped by client, clients ordered by most recent article |
 
 ---
 
 ## Tech Stack
 - **HTML/CSS/JS** — no framework, no build step
 - **Fonts** — DM Serif Display (headings) + Open Sans (body) via Google Fonts
-- **Hosting** — GitHub Pages (branch: `main`, root `/`)
+- **Hosting** — GitHub Pages (branch: `main`, root `/`), custom domain `iluminacomms.com` via `CNAME` in the repo root
 - **Press data pipeline** — Google Sheets → GitHub Actions cron → `data/press.json`
 
 ## Design System
@@ -87,7 +89,20 @@ Clients are ordered automatically by their most recent article — whoever got p
 - OG data is cached per URL — existing entries are not re-fetched unless the URL changes
 
 ### Notes on OG image coverage
-Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their cards show a styled placeholder with the outlet name instead of an image. To add images for these manually, add an `og_image` column to the Google Sheet with the image URL for that row.
+Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their cards show a styled placeholder with the outlet name instead of an image.
+
+⚠️ **Correction (2026-08-15):** earlier versions of this file claimed you could add images by simply adding an `og_image` column to the Google Sheet. **That does not work** — verified by test, 0 of 2 manual values survived a run. `fetch_press.py` unconditionally overwrites `og_image` on every row: cached URLs get clobbered by `row.update(og_cache[url])`, and uncached ones by `row["og_image"] = img` from the scrape (which writes `""` when the scrape fails).
+
+To make the manual column work, `fetch_press.py` must preserve a non-empty value coming from the sheet — read it before the cache/scrape branch and re-apply it after:
+
+```python
+manual_img = (row.get("og_image") or "").strip()
+# ... existing cache / fetch_og logic ...
+if manual_img:
+    row["og_image"] = manual_img   # sheet wins over cache and scrape
+```
+
+`pressCard()` in `js/main.js` already renders `og_image` when present, so no front-end change is needed.
 
 ---
 
@@ -101,8 +116,11 @@ Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their
 ## Pending / Future Work
 - [ ] Confirm LinkedIn company URL
 - [ ] Human review of all Spanish translations (in `js/main.js` → `T.es`)
-- [ ] Add custom domain (e.g. iluminacommunications.com) — add CNAME file to repo root
-- [ ] Add `og_image` column to Google Sheet for paywalled articles if desired
+- [ ] **Awaiting decision from the Ilumina team** — supply cover images manually for articles that can't be scraped, via an `og_image` column in the Google Sheet.
+  - **Why it matters now:** 7 of the 13 Carabela / Bresh notes added on 2026-08-15 render the outlet-name placeholder instead of an image, and Carabela currently sits at the top of the press page, so the gap is more visible than before.
+  - **Which ones:** Billboard, Billboard (Spanish), K-Jewel 99.3 FM, Dealroom.com, IQ Magazine (×2) fail consistently. Radio Facts is intermittent — it returned an image on a manual retry, and since the cron re-scrapes uncached entries daily it will likely resolve on its own. So realistically **6** need manual images.
+  - **This DOES require a code change** — verified by test, see the OG image note above. Adding the column alone is not enough; `fetch_press.py` overwrites it.
+- [x] Add custom domain — **done**, `iluminacomms.com` live via `CNAME` in the repo root
 - [ ] Update `actions/checkout@v4` → `@v5` in `.github/workflows/update-press.yml` (minor, removes a deprecation warning)
 
 ---
@@ -122,7 +140,13 @@ Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their
 - Added `parsePressDate()` and replaced the `clientOrder` array with `LEGACY_CLIENT_ORDER`, now used only as a tiebreaker.
 - `scripts/fetch_press.py` needed no changes — it uses `csv.DictReader` and passes the whole row through, so any new Sheet column lands in `press.json` automatically.
 - **Rejected approach:** scraping publication dates from the articles. Measured coverage was only 23/54 (20 blocked by paywalls, 11 with no date metadata), and at least one date was demonstrably wrong — a Univision-era New Yorker piece reported `2024-08-17` via `og:published_time`, which would have wrongly pushed Univision News to the top. Silent failure mode, so the explicit `Date` column won.
-- **Next step (pending):** add the `Date` column to the Google Sheet. Until it exists, the page renders in the curated fallback order — no breakage.
+- **Done same day:** `Date` column added to the Sheet, 13 new Carabela / Bresh notes loaded dated `2026-08-15`, workflow run. `press.json` went 54 → 67 entries and Carabela / Bresh moved to the top of the page — first real use of the recency ordering, verified against the deployed assets.
+- Note: the 13 new notes were dated with the load date, not each article's real publication date. Fine for client ordering; would need real dates to sort notes *within* a client or to display a date on the card.
+
+### 2026-08-15 — Custom domain + docs correction
+- Confirmed `iluminacomms.com` is live via the `CNAME` file in the repo root; the old `ramonzamora89.github.io/ilumina-website` URL 301-redirects to it. Updated the Overview and Tech Stack sections, which still listed the old URL.
+- **Corrected a long-standing documentation error** about adding images manually via an `og_image` Sheet column — it never worked, see "Notes on OG image coverage".
+- Reminder: GitHub Pages serves with `cache-control: max-age=600`, so after a workflow run you need a hard refresh (`Cmd+Shift+R`) for ~10 minutes to see changes. New visitors are unaffected.
 
 ### 2026-06-26 — Initial launch
 - Built 3-page site from scratch using content from `Home.docx`, `short_bios.xlsx`, `Press.xlsx`
