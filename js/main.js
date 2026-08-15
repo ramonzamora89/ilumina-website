@@ -271,6 +271,38 @@ function renderTeam() {
 }
 
 // ── Press Page ────────────────────────────────────────────────────────────────
+
+// Used only to break ties between clients with no dated article yet, so the
+// page keeps its original curated order until real dates start coming in.
+const LEGACY_CLIENT_ORDER = [
+  'Univision News',
+  'Exile Content Studio',
+  '#ZamoraLibre Campaign',
+  'HYBE Latin America',
+  'Carabela / Bresh',
+  'El Archivo'
+];
+
+// The sheet's Date column is expected as YYYY-MM-DD. Blank or unparseable
+// means "legacy entry" — it sorts last instead of breaking the order.
+function parsePressDate(value) {
+  const s = (value || '').trim();
+  if (!s) return null;
+
+  const iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (iso) return Date.UTC(+iso[1], +iso[2] - 1, +iso[3]);
+
+  // Sheets exports M/D/YYYY under en-US; a first value over 12 can only be a day.
+  const slash = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (slash) {
+    const [month, day] = +slash[1] > 12 ? [+slash[2], +slash[1]] : [+slash[1], +slash[2]];
+    return Date.UTC(+slash[3], month - 1, day);
+  }
+
+  const parsed = Date.parse(s);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
 function pressCard(article) {
   const url     = (article.Article || article['Article URL'] || '#').trim();
   const outlet  = (article.Outlet  || '').trim();
@@ -314,19 +346,30 @@ async function renderPress() {
       groups[client].push(item);
     }
 
-    const clientOrder = [
-      'Univision News',
-      'Exile Content Studio',
-      '#ZamoraLibre Campaign',
-      'HYBE Latin America',
-      'Carabela / Bresh',
-      'El Archivo'
-    ];
+    // Each client is ranked by its most recent article, so whoever got press
+    // last rises to the top. Undated clients fall back to the curated order.
+    const latestDate = client => groups[client].reduce((max, item) => {
+      const t = parsePressDate(item.Date);
+      return t !== null && (max === null || t > max) ? t : max;
+    }, null);
 
-    const orderedEntries = [
-      ...clientOrder.filter(c => groups[c]).map(c => [c, groups[c]]),
-      ...Object.entries(groups).filter(([c]) => !clientOrder.includes(c))
-    ];
+    const legacyRank = client => {
+      const i = LEGACY_CLIENT_ORDER.indexOf(client);
+      return i === -1 ? LEGACY_CLIENT_ORDER.length : i;
+    };
+
+    const dates = {};
+    for (const client of Object.keys(groups)) dates[client] = latestDate(client);
+
+    const orderedEntries = Object.keys(groups).sort((a, b) => {
+      const da = dates[a], db = dates[b];
+      if (da !== db) {
+        if (da === null) return 1;   // undated always sinks
+        if (db === null) return -1;
+        return db - da;              // most recent first
+      }
+      return legacyRank(a) - legacyRank(b) || a.localeCompare(b);
+    }).map(c => [c, groups[c]]);
 
     container.innerHTML = `<div class="press-clients">${
       orderedEntries.map(([client, articles]) => `

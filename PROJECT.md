@@ -66,8 +66,17 @@ ilumina-website/
 ## Press Data Pipeline
 The press page reads from `data/press.json` at runtime via `fetch()`.
 
+### Client ordering (recency)
+Clients are ordered automatically by their most recent article — whoever got press last appears at the top of the page. Driven by an optional `Date` column in the Google Sheet.
+
+- **Format:** `YYYY-MM-DD` (the parser also accepts `M/D/YYYY` and `D/M/YYYY`).
+- **Blank or unparseable = "legacy entry"** — it sorts to the bottom instead of breaking the order. The 54 original entries are intentionally left blank.
+- **Ties** (e.g. all clients undated) fall back to `LEGACY_CLIENT_ORDER` in `js/main.js`, so the page looks exactly as curated until real dates arrive.
+- A client is ranked by its **newest** article, so adding an old note never demotes it.
+- Do NOT seed old entries with today's date — a genuinely new article published a few days earlier would sort *below* the seed and fail to rise. Blank is the correct value for legacy rows.
+
 ### Updating press data
-1. Add rows to the Google Sheet (columns: `Client` · `Outlet` · `Article`)
+1. Add rows to the Google Sheet (columns: `Client` · `Outlet` · `Article` · `Date`)
 2. The GitHub Actions workflow runs automatically every morning at 8am EST
 3. It fetches the sheet as CSV, scrapes `og:image` + `og:title` for new URLs, and commits the updated `press.json`
 4. To trigger manually: GitHub repo → Actions → "Update Press Data" → Run workflow
@@ -106,7 +115,14 @@ Paywalled outlets (NYT, FT, Bloomberg, Economist, WaPo) block scraping — their
 - **Second gotcha:** one Sheet row had `Carabela/ Bresh` (missing space), which split the client into two separate groups on the page, since grouping matches on the exact string. Fixed in the Sheet; workflow re-triggered manually to regenerate `press.json`.
 - Note: the Billboard entry's `og_title` still reads "Bresh Partners With Carroll Street Capital…" — that is the outlet's actual headline, scraped from the article. Left as is.
 
-**Rule of thumb for future client renames:** update the Google Sheet *and* `clientOrder` in `js/main.js`, then re-run the workflow manually instead of waiting for the 8am cron.
+**Rule of thumb for future client renames:** update the Google Sheet *and* `LEGACY_CLIENT_ORDER` in `js/main.js`, then re-run the workflow manually instead of waiting for the 8am cron.
+
+### 2026-08-15 — Dynamic client ordering by recency
+- Client groups on the press page now sort by their most recent article instead of a fixed hardcoded list. See "Client ordering (recency)" above.
+- Added `parsePressDate()` and replaced the `clientOrder` array with `LEGACY_CLIENT_ORDER`, now used only as a tiebreaker.
+- `scripts/fetch_press.py` needed no changes — it uses `csv.DictReader` and passes the whole row through, so any new Sheet column lands in `press.json` automatically.
+- **Rejected approach:** scraping publication dates from the articles. Measured coverage was only 23/54 (20 blocked by paywalls, 11 with no date metadata), and at least one date was demonstrably wrong — a Univision-era New Yorker piece reported `2024-08-17` via `og:published_time`, which would have wrongly pushed Univision News to the top. Silent failure mode, so the explicit `Date` column won.
+- **Next step (pending):** add the `Date` column to the Google Sheet. Until it exists, the page renders in the curated fallback order — no breakage.
 
 ### 2026-06-26 — Initial launch
 - Built 3-page site from scratch using content from `Home.docx`, `short_bios.xlsx`, `Press.xlsx`
