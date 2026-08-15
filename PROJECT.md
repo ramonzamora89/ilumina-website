@@ -104,6 +104,28 @@ if manual_img:
 
 `pressCard()` in `js/main.js` already renders `og_image` when present, so no front-end change is needed.
 
+#### Intended editorial workflow (proposed, awaiting team decision)
+The idea Ilumina is considering: when an article ships without a usable photo, the person maintaining the Google Sheet picks an image, hosts it somewhere public, and pastes the link into the `og_image` column. This is editorial control over how a note is promoted on the site, not just a technical patch — worth doing properly.
+
+Three conditions must ALL hold. As of 2026-08-15, none do:
+
+| # | Condition | Status |
+|---|---|---|
+| 1 | `fetch_press.py` preserves the sheet value | ❌ Not implemented — see patch above. Nothing works without this. |
+| 2 | The image is publicly readable | ⬜ Depends on where they host it |
+| 3 | The URL points at the image bytes, not a viewer page | ⬜ See below |
+
+**Hosting is irrelevant to condition 1.** The overwrite happens before the URL is ever used, so Drive / Dropbox / anywhere all fail identically. The test that proved this used ordinary external URLs.
+
+**On Google Drive (condition 3):** the normal share link is a viewer page, not an image.
+
+- `https://drive.google.com/file/d/FILE_ID/view?usp=sharing` → returns `text/html`. Pasted into the column it would render a broken image even after the patch.
+- `https://drive.google.com/uc?export=view&id=FILE_ID` → `303` redirect to `drive.usercontent.google.com/download?...`, which is the right shape. Google has changed this route repeatedly and throttles hotlinking, so **test it with a real public file before standardising on it** — the check above used invalid file IDs and only confirms URL shape, not real-file behaviour.
+
+**Recommended alternative:** commit the images to `assets/press/` in this repo and put a relative path (`assets/press/billboard-bresh.jpg`) in the column. Same origin, no throttling, no link rot, versioned with the site. Trade-off: uploading requires repo access, which the sheet maintainer may not have. If they don't, Drive is reasonable — just validate one real image end to end first.
+
+**When the team decides yes:** apply the patch, then verify one real image all the way through (sheet → workflow → `press.json` → rendered card) before loading the remaining six.
+
 ---
 
 ## Contact & Links
@@ -119,7 +141,8 @@ if manual_img:
 - [ ] **Awaiting decision from the Ilumina team** — supply cover images manually for articles that can't be scraped, via an `og_image` column in the Google Sheet.
   - **Why it matters now:** 7 of the 13 Carabela / Bresh notes added on 2026-08-15 render the outlet-name placeholder instead of an image, and Carabela currently sits at the top of the press page, so the gap is more visible than before.
   - **Which ones:** Billboard, Billboard (Spanish), K-Jewel 99.3 FM, Dealroom.com, IQ Magazine (×2) fail consistently. Radio Facts is intermittent — it returned an image on a manual retry, and since the cron re-scrapes uncached entries daily it will likely resolve on its own. So realistically **6** need manual images.
-  - **This DOES require a code change** — verified by test, see the OG image note above. Adding the column alone is not enough; `fetch_press.py` overwrites it.
+  - **This DOES require a code change** — verified by test, see the OG image note above. Adding the column alone is not enough; `fetch_press.py` overwrites it, regardless of where the image is hosted.
+  - The proposed workflow (sheet maintainer picks and hosts an image, pastes the link) plus the Drive URL caveats are written up under "Intended editorial workflow" above.
 - [x] Add custom domain — **done**, `iluminacomms.com` live via `CNAME` in the repo root
 - [ ] Update `actions/checkout@v4` → `@v5` in `.github/workflows/update-press.yml` (minor, removes a deprecation warning)
 
@@ -145,7 +168,7 @@ if manual_img:
 
 ### 2026-08-15 — Custom domain + docs correction
 - Confirmed `iluminacomms.com` is live via the `CNAME` file in the repo root; the old `ramonzamora89.github.io/ilumina-website` URL 301-redirects to it. Updated the Overview and Tech Stack sections, which still listed the old URL.
-- **Corrected a long-standing documentation error** about adding images manually via an `og_image` Sheet column — it never worked, see "Notes on OG image coverage".
+- **Corrected a long-standing documentation error** about adding images manually via an `og_image` Sheet column — it never worked, see "Notes on OG image coverage". Also documented the editorial workflow Ilumina is considering, the three conditions it needs, and why a Google Drive share link won't work as an image source.
 - Reminder: GitHub Pages serves with `cache-control: max-age=600`, so after a workflow run you need a hard refresh (`Cmd+Shift+R`) for ~10 minutes to see changes. New visitors are unaffected.
 
 ### 2026-06-26 — Initial launch
